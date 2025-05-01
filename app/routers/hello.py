@@ -6,6 +6,8 @@ from fastapi import APIRouter, Body, HTTPException, status
 
 from app.internal.validators import is_dob_valid, is_username_valid
 
+_date_format = "%Y-%m-%d"
+
 router = APIRouter()
 
 logger = logging.getLogger(__name__)
@@ -25,9 +27,10 @@ async def upsert_birthday(
     try:
         dob = datetime.strptime(dobstr, "%Y-%m-%d").date()
     except ValueError:
+        logger.warning(f"Unable to parse with format={_date_format}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Ivalid dateOfBirth format, corret one is: 'YYYY-MM-DD'",
+            detail=f"Ivalid dateOfBirth format, corret one is: '{_date_format}'",
         )
 
     if not is_dob_valid(dob):
@@ -39,5 +42,6 @@ async def upsert_birthday(
 
 @router.get("/{username}")
 async def get_birthday(username: str):
+    logger.info(f"Trying to find brirthday for username={username}")
     msg = f"Hello, {username}! Your birthday is in N day(s)"
     return {"message": msg}
