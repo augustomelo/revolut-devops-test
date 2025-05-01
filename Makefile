@@ -1,7 +1,11 @@
-.PHONY: dev  test-integration test-unit
+.PHONY: dev test test-integration test-unit
 
 dev:
 	uv run uvicorn app.main:app --reload --log-config=./app/log_config.yaml
+
+test:
+	uv run pytest ./tests
+
 
 test-integration:
 	uv run pytest ./tests/integration/
