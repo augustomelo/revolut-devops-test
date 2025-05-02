@@ -1,9 +1,17 @@
 FROM python:3.13-slim
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-COPY . /app
+RUN addgroup --system --gid 1000 revolut && \
+    adduser --system --no-create-home --uid 1000 --gid 1000 app;
 
-WORKDIR /app
-RUN uv sync --frozen --no-cache
+USER app:revolut
 
-CMD ["/app/.venv/bin/fastapi", "run", "app/main.py", "--port", "80", "--host", "0.0.0.0"]
+WORKDIR /src
+ENV PATH="/src/.venv/bin:$PATH"
+
+COPY --chown=app:revolut --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY --chown=app:revolut ./uv.lock ./pyproject.toml /src
+RUN uv sync --frozen --no-cache --no-dev;
+
+COPY --chown=app:revolut ./app ./app
+
+CMD ["uvicorn", "app.main:app", "--port", "8000", "--host", "0.0.0.0", "--log-config", "/src/app/log_config.yaml"]

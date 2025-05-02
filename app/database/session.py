@@ -25,9 +25,6 @@ def dispose_connection():
     _engine.dispose()
 
 
-def get_session(database_url: str) -> Generator:
-    try:
-        with Session(_engine) as session:
-            yield session
-    except Exception as ex:
-        logger.error("Unable to get a session", ex)
+def get_session() -> Generator:
+    with Session(_engine) as session:
+        yield session
