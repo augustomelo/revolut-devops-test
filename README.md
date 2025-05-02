@@ -2,6 +2,25 @@
 
 ## Solution
 
+1.
+
+There is a make file with the following targets:
+
+- dev: run the application, it's mandatory to define `DATABASE_URL`, you can set to `sqlite://`.
+- run-dev: run the application together with a PostgreSQL instance.
+- test: run unit ant integration tests.
+- test-integration: run integration tests.
+- test-unit: run tests
+
+Steps to run:
+
+```bash
+make DATABASE_URL="sqlite://" dev
+curl 'http://127.0.0.1:8000/hello/augusto'
+curl --request PUT --header 'Content-Type: application/json' --data $'{\n    "dateOfBirth": "1992-08-06"\n}' 'http://127.0.0.1:8000/hello/augusto'
+curl 'http://127.0.0.1:8000/hello/augusto'
+```
+
 ## Summary
 
 ### Tasks
