@@ -1,7 +1,16 @@
-.PHONY: dev test test-integration test-unit
+.PHONY: dev run-dev test test-integration test-unit
+
+DATABASE_URL ?= unset
 
 dev:
-	uv run uvicorn app.main:app --reload --log-config=./app/log_config.yaml
+	@if [ "$(DATABASE_URL)" == "unset" ]; then \
+		echo "DATABASE_URL is not set."; \
+		exit 1; \
+	fi
+	uv run uvicorn app.main:app --reload --log-config ./app/log_config.yaml
+
+run-dev:
+	docker-compose up
 
 test:
 	DATABASE_URL="sqlite://" uv run pytest ./tests -v --log-cli-level=INFO
