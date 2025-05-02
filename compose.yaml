@@ -1,0 +1,27 @@
+name: revolut-challenge
+
+services:
+  hello-app:
+    build: .
+    depends_on:
+      db:
+        condition: service_started
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://hello-app:revolutpass@db:5432/revolut
+
+  db:
+    image: postgres:17.4
+    container_name: db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: revolutpass
+      POSTGRES_USER: hello-app
+      POSTGRES_DB: revolut
+    volumes:
+      - db-postgresl:/var/lib/postgresql/data
+
+volumes:
+  db-postgresl:
