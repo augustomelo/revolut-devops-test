@@ -2,7 +2,7 @@
 
 ## Solution
 
-1.
+### Item 1
 
 There is a make file with the following targets:
 
@@ -20,6 +20,27 @@ curl 'http://127.0.0.1:8000/hello/augusto'
 curl --request PUT --header 'Content-Type: application/json' --data $'{\n    "dateOfBirth": "1992-08-06"\n}' 'http://127.0.0.1:8000/hello/augusto'
 curl 'http://127.0.0.1:8000/hello/augusto'
 ```
+
+### Item 2
+
+![System diagram](./docs/system-diagram/system-diagram.png)
+
+Given that the question specified a solution to be deployed either on AWS or
+GCP, it was assumed that only AWS or GCP services should be used.
+
+The following solutions were used:
+
+- Elastic Container Registry (ECR): for storing the containers.
+- CloudFormation: Infrastructure as Code (IaC) and GitOps.
+- Secret Manager: for any secret that the application might need
+- Relational Database Service (RDS): provisioning and database management (scaling and backups)
+- Elastic Kubernetes Service (EKS): for managing and scaling the EC2 cluster instances
+- Elastic Compute Cloud (EC2): Kubernetes nodes
+- Application Load Balancer: to expose the application to the internet
+- Route 53: Domain name system
+- Elastic Network Interfaces (ENI): communication between Virtual Private Cloud (VPC)
+
+### Item 3
 
 ## Summary
 
