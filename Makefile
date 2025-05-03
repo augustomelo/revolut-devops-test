@@ -1,6 +1,7 @@
 .PHONY: dev run-dev test test-integration test-unit
 
 DATABASE_URL ?= unset
+KUBECONFIG ?= unset
 
 dev:
 	@if [ "$(DATABASE_URL)" == "unset" ]; then \
@@ -20,3 +21,14 @@ test-integration:
 
 test-unit:
 	uv run pytest ./tests/unit/ -v --log-cli-level=INFO
+
+build-container:
+	docker buildx build --tag hello-app:0.1.0 .
+
+deploy:
+	@if [ "$(KUBECONFIG)" == "unset" ]; then \
+		echo "KUBECONFIG is not set."; \
+		exit 1; \
+	fi
+
+	helm install hello-app ./k8s/hello-app

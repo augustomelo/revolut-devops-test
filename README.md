@@ -31,28 +31,50 @@ GCP, it was assumed that only AWS or GCP services should be used.
 The following solutions were used:
 
 - Elastic Container Registry (ECR): for storing the containers.
-- CloudFormation: Infrastructure as Code (IaC) and GitOps.
-- Secret Manager: for any secret that the application might need
-- Relational Database Service (RDS): provisioning and database management (scaling and backups)
-- Elastic Kubernetes Service (EKS): for managing and scaling the EC2 cluster instances
-- Elastic Compute Cloud (EC2): Kubernetes nodes
-- Application Load Balancer: to expose the application to the internet
-- Route 53: Domain name system
-- Elastic Network Interfaces (ENI): communication between Virtual Private Cloud (VPC)
+- CloudFormation: Infrastructure as Code (IaC) and GitOps using Git Sync.
+- Relational Database Service (RDS): provisioning and database management (scaling and backups).
+- Elastic Kubernetes Service (EKS): for managing and scaling the EC2 cluster instances.
+- Elastic Compute Cloud (EC2): Kubernetes nodes.
+- Application Load Balancer: to expose the application to the internet.
+- Elastic Network Interfaces (ENI): communication between Virtual Private Cloud (VPC).
+- CodeCommit, CodePipeline and CodeBuild: are responsible for the CI/CD.
 
 ### Item 3
+
+For this item, I am assuming the following:
+
+- That I won't need to provide scripts (like Terraform) for the Infrastructure
+  defined on the previous step.
+- This would be deployed on a Kubernetes cluster using helm chart defined uner
+  ./k8s/hello-app.
+
+```bash
+# Requirements:
+# - KUBECONFIG is set
+# - Container need to be pushed to some registry, in the case of running on a minikube
+make build-container
+make publish-minikube
+make deploy
+make expose-nodeport-minikube
+
+# If not running on minikube the following changes are necessary
+# - On ./k8s/hello-app/values.yaml change the image.reposioty to reflect where the container was pushed
+# - Change how the service will be expose on ./k8s/hello-app/values.yaml service.type, beacuse now is using a NodePort.
+make deploy
+
+```
 
 ## Summary
 
 ### Tasks
 
-- [ ] Design and code a simple "Hello World" application that exposes the
+- [X] Design and code a simple "Hello World" application that exposes the
   following HTTP-based APIs
   - PUT /hello/<username>
   - GET /hello/<username>
-- [ ] Produce a system diagram of your solution deployed to either AWS or GCP
+- [X] Produce a system diagram of your solution deployed to either AWS or GCP
   (it's not required to support both cloud platforms).
-- [ ] Write configuration scripts for building and no-downtime production
+- [X] Write configuration scripts for building and no-downtime production
   deployment of this application, keeping in mind aspects that an SRE would
   have to consider.
 
